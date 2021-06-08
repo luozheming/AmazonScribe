@@ -1,0 +1,2 @@
+# AmazonScribe
+Structure  for  scraping
