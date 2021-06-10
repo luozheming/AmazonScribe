@@ -1,0 +1,9 @@
+@startuml
+start
+:Sign (msg notify);
+:get schedule config from
+**parameter center**;
+:create and set data_collection_info;
+:storeid,start_time,end_time,active=Y;
+stop
+@enduml

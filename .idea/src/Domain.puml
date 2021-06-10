@@ -1,0 +1,28 @@
+@startuml
+object DataCollection
+DataCollection : data_collection_id 主键，分库分表字段
+DataCollection : modified_time 更新时间
+DataCollection : create_time   创建时间
+DataCollection : seller_id     用户id
+DataCollection : account_no    账户id
+DataCollection : active        数据采集激活标识 N/Y
+DataCollection : is_running    是否有task在执行 N/Y
+DataCollection : is_valid      店铺的token是否有效 N/Y
+DataCollection : start_time    已采集数据的起始时间
+DataCollection : end_time      已采集数据的终止时间
+DataCollection : schedule_config_key  定时任务配置唯一键
+DataCollection : survial_times  存活次数
+
+object DataTask
+DataTask : data_task_id    主键
+DataTask : modified_time   更新时间
+DataTask : create_time     创建时间
+DataTask : data_collection_id  外健
+DataTask : status 任务状态
+DataTask : extend_info 拓展信息
+DataTask : retry_times 重试次数
+DataTask : start_time  任务开始时间
+DataTask : end_time    任务结束时间
+DataTask : next_exec_time  下次执行时间
+DataCollection o-- DataTask : data_collection_id
+@enduml
