@@ -1,0 +1,29 @@
+@startuml
+start
+partition  Splitor{
+:split 100 task;
+}
+partition Loader{
+:load collection with active=Y,is_valid=Y,is_running=N in each partition;
+:get schedule config by schedule_config_key;
+if (the config active=N?) then  (Y)
+end
+else (N)
+if (end_time>=now-collection_floor) then (Y)
+end
+else (N)
+:get lastest task(only one) with status in **init、running、retry** by data_collection_id;
+endif
+endif
+}
+partition excutor{
+if(task==null?) then (Y)
+:get schedule config by schedule_key;
+:create task and set start_time、end_time by config.caculate and set next_exec_time;
+:store the task;
+end
+else (N)
+end
+endif
+}
+@enduml

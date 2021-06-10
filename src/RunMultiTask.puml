@@ -1,0 +1,20 @@
+@startuml
+start
+:init context;
+:get handler from factory by action;
+partition HandlerLogic{
+:call api to prepare data;
+:wait 5 seconds and call api to check data;
+while(is the data ready?) is(N)
+:call times plus one;
+if(call times <=3 ?) then (Y)
+:wait 5 seconds and call api to check data;
+else(N)
+:task run failed;
+end
+endif
+endwhile(Y)
+:get full data and process(split、analysis);
+:store to database;
+stop
+@enduml

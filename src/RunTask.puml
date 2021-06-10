@@ -1,0 +1,35 @@
+@startuml
+start
+partition Splitor{
+:split 100 task;
+}
+partition Loader{
+:load data with status in **init、running、retry** and now >= next_exec_time in each partition;
+}
+partition Executor{
+:set task status **RUNNING**;
+:init context;
+if(over retry times?) then(Y)
+:set task status failed;
+end
+else (N)
+if(isvalid of collection is Y?) then(N)
+:set task status terminate;
+end
+else (Y)
+if(active of collection is Y?) then(N)
+:set task status terminate;
+end
+else(Y)
+:recaculate next exec time;
+:assemble parameter;
+:do handle;
+if(task run success) then(Y)
+:execute post-processing;
+:set task status **DONE**;
+else(N)
+:increase retry times;
+:set task status **Retry**;
+endif
+stop
+@enduml

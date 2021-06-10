@@ -100,36 +100,92 @@ end note
 
 
 @startuml
-
 start
-
-if (Graphviz installed?) then (yes)
-  :process all\ndiagrams;
-else (no)
-  :process only
-  __sequence__ and __activity__ diagrams;
-endif
-
-stop
-
-@enduml
-
-
-@startuml
-start
-:Hello world;
-:This is on defined on
-several **lines**;
+:init context;
+:get handler from factory by action;
+partition HandlerLogic{
+:call api to prepare data;
+:wait 5 seconds and call api to check data;
+while(is the data ready?) is(N)
+:call times plus one;
+if(call times <=3 ?) then (Y)
+:wait 5 seconds and call api to check data;
+else(N)
+:task run failed;
 end
+endif
+endwhile(Y)
+:get full data and process(split、analysis);
+:store to database;
+stop
+@enduml
+
+
+@startuml
+while (check filesize ?) is (not empty)
+  :read file;
+endwhile (empty)
+:close file;
 @enduml
 
 
 @startuml
 start
-:Sign (msg notify);
-:get schedule config from
-**parameter center**;
-:create and set data_collection_info;
-:storeid,start_time,end_time,active=Y;
+:split 100 task;
+:load collection with active=Y,is_valid=Y,is_running=N in each partition;
+:get schedule config by schedule_config_key;
+if (the config active=N?) then  (Y)
+end
+else (N)
+if (end_time>=now-collection_floor) then (Y)
+end
+else (N)
+:get lastest task(only one) with status in **init、running、retry** by data_collection_id;
+endif
+endif
+if(task==null?) then (Y)
+:get schedule config by schedule_key;
+:create task and set start_time、end_time by config.caculate and set next_exec_time;
+:store the task;
+end
+else (N)
+end
+endif
+@enduml
+
+
+@startuml
+start
+partition Splitor{
+:split 100 task;
+}
+partition Loader{
+:load data with status in **init、running、retry** and now >= next_exec_time in each partition;
+}
+partition Executor{
+:set task status **RUNNING**;
+:init context;
+if(over retry times?) then(Y)
+:set task status failed;
+end
+else (N)
+if(isvalid of collection is Y?) then(N)
+:set task status terminate;
+end
+else (Y)
+if(active of collection is Y?) then(N)
+:set task status terminate;
+end
+else(Y)
+:recaculate next exec time;
+:assemble parameter;
+:do handle;
+if(task run success) then(Y)
+:execute post-processing;
+:set task status **DONE**;
+else(N)
+:increase retry times;
+:set task status **Retry**;
+endif
 stop
 @enduml

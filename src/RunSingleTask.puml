@@ -1,0 +1,15 @@
+@startuml
+start
+:init context;
+:get handler from factory by action;
+partition HandlerLogic{
+:call api;
+:check response data;
+while(has more data?) is(Y)
+:call another api to get remaining data;
+:check response data;
+endwhile(N)
+:get full data and process(split、analysis);
+:store to database;
+stop
+@enduml
