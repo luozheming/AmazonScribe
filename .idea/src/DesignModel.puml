@@ -46,5 +46,57 @@ Object07 .. Object08 : some labels
 
 
 
+@startuml
+object DataCollection
+DataCollection : data_collection_id
+DataCollection : modified_time
+DataCollection : create_time
+DataCollection : seller_id
+DataCollection : account_no
+DataCollection : active
+DataCollection : is_running
+DataCollection : is_valid
+DataCollection : start_time
+DataCollection : end_time
+DataCollection : schedule_config_key
+DataCollection : survial_times
+
+object DataTask
+DataTask : data_task_id
+DataTask : modified_time
+DataTask : create_time
+DataTask : data_collection_id
+DataTask : status
+DataTask : extend_info
+DataTask : retry_times
+DataTask : start_time
+DataTask : end_time
+DataTask : next_exec_time
+DataCollection o-- DataTask : data_collection_id
+@enduml
+
+
+@startuml
+state "Req(Id)" as ReqId <<sdlreceive>>
+state "Minor(Id)" as MinorId
+state "Major(Id)" as MajorId
+
+state c <<choice>>
+
+Idle --> ReqId
+ReqId --> c
+c --> MinorId : [Id <= 10]
+c --> MajorId : [Id > 10]
+@enduml
+
+
+@startuml
+[*] -> State1
+State1 --> State2
+note on link
+  this is a state-transition note
+end note
+@enduml
+
 
 

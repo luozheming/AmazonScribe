@@ -1,7 +1,8 @@
 # AmazonScribe
 Structure  for  scraping
 
-API list below is from Amazon:
+#### API 
+list below is from Amazon original website:
 
 *Seller*
 
@@ -28,7 +29,7 @@ API list below is from Amazon:
 |ListOrderItems| 30 | 1 req/2 seconds |
 |ListOrderItemsByNextToken| 30 | 1 req/2 seconds |
 
-Finance
+*Finance*
 
 | API | maximum request quota| restore rate|
 | :-----:| :----: | :----: |
@@ -36,3 +37,10 @@ Finance
 |ListFinancialEventGroupsByNextToken| 30 | 1 req/2 seconds |
 |ListFinancialEvents| 30 | 1 req/2 seconds |
 |ListFinancialEventsByNextToken| 30 | 1 req/2 seconds |
+
+
+#### 领域模型设计
+
+同一个data_collection_info会对应多个task,但同一时刻，只有一个task处于运行状态。（目的：为了方便控制抓取频率和步长）
+
+
